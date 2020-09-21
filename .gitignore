@@ -1,1 +1,8 @@
-certificates/certs
+certificates/certs/*.jks
+certificates/certs/*.p12
+certificates/certs/*.pem
+certificates/certs/*.srl
+certificates/certs/ca-cert
+certificates/certs/ca-key
+certificates/certs/cert-file
+certificates/certs/cert-signed

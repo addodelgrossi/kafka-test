@@ -39,6 +39,16 @@ echo "my message" | kaf -b localhost:9092 produce without-security
 cd certificates
 ./docker-kafka-ssl-certs.sh
 cd ..
+chmod 644 certificates/certs/*
+```
+
+### Change docker-compose-ssl.yaml
+
+Caso for geerado um novo certificado, o mesmo deve ser atualizado no docker-compose-ssl.yaml
+
+```bash
+cat certificates/certs/docker.kafka.client.truststore.jks | base64
+cat certificates/certs/docker.kafka.server.keystore.jks | base64
 ```
 
 ### Running Kafka, Zookeeper and kafdrop - SSL Client
@@ -65,7 +75,7 @@ docker run --rm -it \
 
 #### Problema encontrados
 
-Existe um bug para ignorar a validação do certificação, conforme o link <https://github.com/logstash-plugins/logstash-integration-kafka/issues/52>, por isso estamos utilizando uma versão antiga do logstash. O problema ocorre somente no plugin de output.
+Existe um bug na validação do certificação, conforme o link <https://github.com/logstash-plugins/logstash-integration-kafka/issues/52>, por isso estamos utilizando uma versão antiga do logstash. O problema ocorre somente no plugin de output.
 
 ### Security
 

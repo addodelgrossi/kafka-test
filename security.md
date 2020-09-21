@@ -67,3 +67,4 @@ ssl.key.password=${securepass:secrets.file:server.properties/ssl.key.password}
 * <https://medium.com/@infobarbosa/kafka-ssl-authentication-lab-f5780d46fe03>
 * <https://medium.com/weareservian/encryption-authentication-and-external-access-for-confluent-kafka-on-kubernetes-69c723a612fc>
 * <https://www.confluent.io/blog/kafka-security-secret-encryption-with-confluent/>
+* <https://www.vertica.com/docs/9.2.x/HTML/Content/Authoring/KafkaIntegrationGuide/TLS-SSL/KafkaTLS-SSLExamplePart3ConfigureKafka.htm>
