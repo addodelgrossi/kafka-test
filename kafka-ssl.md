@@ -2,14 +2,16 @@
 
 ## Gerando certificados
 
+
+
 ```bash 
-sudo mkdir /opt/kafka/config/certs
-sudo chown -R ubuntu:ubuntu /opt/kafka/config/certs
-cd /opt/kafka/config/certs
+sudo mkdir /home/administrator/kafka/config/certs
+sudo chown -R ubuntu:ubuntu /home/administrator/kafka/config/certs
+cd /home/administrator/kafka/config/certs
 cat <<EOF > $(pwd)/generate-certs.sh
 #!/bin/bash
 
-PASSWORD="energisa"
+PASSWORD="********"
 SERVER_KEYSTORE_JKS="kafka.server.keystore.jks"
 SERVER_KEYSTORE_P12="kafka.server.keystore.p12"
 SERVER_KEYSTORE_PEM="kafka.server.keystore.pem"
@@ -42,7 +44,7 @@ chmod +x $(pwd)/generate-certs.sh
 
 ### Ajustanto os serviços
 
-### Zookeeper
+### Zookeeper Services
 
 ```bash
 vim zookeeper.service
@@ -64,7 +66,7 @@ Restart=on-abnormal
 WantedBy=multi-user.target
 ```
 
-### Kafka
+### Kafka Service
 
 ```bash
 vim kafka.service
@@ -87,3 +89,79 @@ RestartSec=180
 [Install]
 WantedBy=multi-user.target
 ```
+
+## Configurações
+
+### Zookeeper
+
+```bash
+vim /home/administrator/kafka/config/zookeeper.properties
+```
+
+```bash
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# the directory where the snapshot is stored.
+dataDir=/var/zookeeper
+# the port at which the clients will connect
+clientPort=2181
+# disable the per-ip limit on the number of connections since this is a non-production config
+maxClientCnxns=0
+# Disable the adminserver by default to avoid port conflicts.
+# Set the port to something non-conflicting if choosing to enable this
+admin.enableServer=false
+# admin.serverPort=8080
+```
+
+### Kafka
+
+```bash
+vim /home/administrator/kafka/config/server.properties
+```
+
+#### Remover as linhas
+
+```bash
+security.inter.broker.protocol=SASL_PLAINTEXT
+sasl.mechanism.inter.broker.protocol=PLAIN
+sasl.enabled.mechanisms=PLAIN
+
+authorizer.class.name=kafka.security.auth.SimpleAclAuthorizer
+allow.everyone.if.no.acl.found=true
+listeners=SASL_PLAINTEXT://0.0.0.0:9092
+advertised.listeners=SASL_PLAINTEXT://10.83.102.23:9092
+```
+
+#### Adicionar as linhas
+
+```bash
+listeners=SSL://10.83.102.23:9092,PLAINTEXT://localhost:9093
+advertised.listeners=SSL://10.83.102.23:9092,PLAINTEXT://localhost:9093
+listener.security.protocol.map=SSL:SSL,PLAINTEXT:PLAINTEXT
+
+
+ssl.keystore.location=/home/administrator/kafka/config/certs/kafka.server.keystore.jks
+ssl.keystore.password=******
+ssl.key.password=*****
+
+ssl.truststore.location=/home/administrator/kafka/config/certs/kafka.server.truststore.jks
+ssl.truststore.password=******
+
+ssl.endpoint.identification.algorithm=
+ssl.client.auth=required
+security.protocol=SSL
+security.inter.broker.protocol=SSL
+```
+
